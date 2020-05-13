@@ -1,10 +1,13 @@
-import {Configuration} from 'webpack';
+import webpack, {Configuration} from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 
 const rendererProcessConfig: Configuration = {
   mode: 'development',
   target: 'electron-renderer',
+  node: {
+    process: false
+  },
   entry: path.resolve(__dirname, '../src/renderer/index.ts'),
   output: {
     path: path.resolve(__dirname, '../dist/renderer'),
@@ -12,6 +15,7 @@ const rendererProcessConfig: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    aliasFields: ['unpkg'],
   },
   module: {
     rules: [{
@@ -30,6 +34,9 @@ const rendererProcessConfig: Configuration = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../src/renderer/index.html'),
     }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
   ],
 };
 
